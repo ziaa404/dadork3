@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>كشف متابعة طلاب الصف الأول الابتدائي - مدارس البشرى</title>
+    <title>نظام متابعة طلاب الصف الأول الابتدائي - مدارس البشرى</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <style>
         * {
@@ -14,13 +15,27 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
             min-height: 100vh;
             direction: rtl;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1.5" fill="rgba(255,255,255,0.05)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.08)"/><circle cx="10" cy="60" r="1" fill="rgba(255,255,255,0.03)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: -1;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
         }
@@ -29,87 +44,169 @@
             text-align: center;
             color: white;
             margin-bottom: 30px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h2 {
+            font-size: 1.5rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .auth-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        .google-signin-btn {
+            background: linear-gradient(45deg, #4285f4, #34a853);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 25px rgba(66, 133, 244, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .google-signin-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.6s;
+        }
+
+        .google-signin-btn:hover::before {
+            left: 100%;
+        }
+
+        .google-signin-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(66, 133, 244, 0.4);
+        }
+
+        .main-content {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(10px);
         }
 
         .teacher-section {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            padding: 25px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 20px;
+            padding: 30px;
             margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
 
         .teacher-input {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 20px;
             margin-bottom: 20px;
         }
 
         .teacher-input label {
             font-weight: bold;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             color: #333;
+            min-width: 120px;
         }
 
         .teacher-input input {
             flex: 1;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
             font-size: 1.1rem;
             transition: all 0.3s ease;
+            background: white;
         }
 
         .teacher-input input:focus {
             border-color: #667eea;
             outline: none;
-            box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 0 15px rgba(102, 126, 234, 0.2);
+            transform: translateY(-2px);
         }
 
-        .auth-section {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            padding: 30px;
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
             margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
             text-align: center;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
         }
 
-        .google-signin-btn {
-            background: #4285f4;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(66, 133, 244, 0.3);
+        .stat-card:hover {
+            transform: translateY(-5px);
         }
 
-        .google-signin-btn:hover {
-            background: #3367d6;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(66, 133, 244, 0.4);
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
         }
 
-        .main-content {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.9;
         }
 
         .student-management {
@@ -124,14 +221,31 @@
         }
 
         .btn {
-            padding: 12px 25px;
+            padding: 15px 30px;
             border: none;
-            border-radius: 10px;
+            border-radius: 15px;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: bold;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.6s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
         }
 
         .btn-add {
@@ -140,8 +254,8 @@
         }
 
         .btn-add:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.4);
         }
 
         .btn-subject {
@@ -150,46 +264,79 @@
         }
 
         .btn-subject:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
         }
 
-        .btn-delete {
-            background: linear-gradient(45deg, #f44336, #d32f2f);
+        .btn-export {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
             color: white;
         }
 
-        .btn-delete:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(244, 67, 54, 0.4);
+        .btn-export:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
+        }
+
+        .search-filter {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            align-items: center;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .filter-select {
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            font-size: 1rem;
+            background: white;
+            cursor: pointer;
         }
 
         .students-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
             margin-bottom: 30px;
         }
 
         .student-card {
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #ffffff, #f8f9fa);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s ease;
             position: relative;
+            border: 1px solid rgba(102, 126, 234, 0.1);
         }
 
         .student-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+            border-color: rgba(102, 126, 234, 0.3);
         }
 
         .student-name {
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             font-weight: bold;
             color: #333;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             text-align: center;
             background: linear-gradient(45deg, #667eea, #764ba2);
             -webkit-background-clip: text;
@@ -199,22 +346,61 @@
 
         .delete-student-btn {
             position: absolute;
-            top: 10px;
-            left: 10px;
+            top: 15px;
+            left: 15px;
             background: #ff4757;
             color: white;
             border: none;
             border-radius: 50%;
-            width: 30px;
-            height: 30px;
+            width: 35px;
+            height: 35px;
             cursor: pointer;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .delete-student-btn:hover {
             background: #ff3742;
             transform: scale(1.1);
+        }
+
+        .progress-bars {
+            margin: 20px 0;
+        }
+
+        .progress-item {
+            margin-bottom: 15px;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.8s ease;
+        }
+
+        .progress-reading {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .progress-writing {
+            background: linear-gradient(90deg, #f093fb, #f5576c);
         }
 
         .modal {
@@ -225,57 +411,70 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .modal-content {
             background: white;
-            margin: 5% auto;
-            padding: 30px;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 800px;
-            max-height: 80vh;
+            margin: 3% auto;
+            padding: 40px;
+            border-radius: 25px;
+            width: 95%;
+            max-width: 900px;
+            max-height: 85vh;
             overflow-y: auto;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-            animation: slideIn 0.3s ease;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+            animation: slideInUp 0.4s ease;
         }
 
-        @keyframes slideIn {
-            from { transform: translateY(-50px); opacity: 0; }
+        @keyframes slideInUp {
+            from { transform: translateY(50px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
 
         .close {
             color: #aaa;
             float: left;
-            font-size: 28px;
+            font-size: 32px;
             font-weight: bold;
             cursor: pointer;
-            transition: color 0.3s ease;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
         }
 
         .close:hover {
             color: #000;
+            background: #f0f0f0;
         }
 
         .skill-section {
-            margin-bottom: 25px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(102, 126, 234, 0.1);
         }
 
         .skill-title {
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             font-weight: bold;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             color: #333;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .skill-item {
@@ -283,15 +482,22 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
-            padding: 10px;
+            padding: 15px;
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .skill-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
         }
 
         .skill-name {
             font-weight: 500;
             color: #333;
+            font-size: 1.1rem;
         }
 
         .skill-buttons {
@@ -300,58 +506,84 @@
         }
 
         .skill-btn {
-            padding: 8px 15px;
+            padding: 10px 20px;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             font-weight: bold;
             transition: all 0.3s ease;
+            min-width: 80px;
         }
 
         .skill-btn.mastered {
             background: #4CAF50;
             color: white;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
         }
 
         .skill-btn.not-mastered {
             background: #f44336;
             color: white;
+            box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
         }
 
         .skill-btn:hover {
             transform: scale(1.05);
         }
 
+        .progress-summary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .progress-summary h3 {
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
         .chart-container {
             margin-top: 30px;
             background: white;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
 
-        .share-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-            justify-content: center;
-        }
-
-        .btn-share {
-            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
             color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
             font-weight: bold;
-            transition: all 0.3s ease;
+            z-index: 2000;
+            animation: slideInRight 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
         }
 
-        .btn-share:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        .notification.success {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+        }
+
+        .notification.info {
+            background: linear-gradient(45deg, #2196F3, #1976D2);
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideOutRight {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
         }
 
         .hidden {
@@ -359,46 +591,74 @@
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             font-weight: bold;
             color: #333;
+            font-size: 1.1rem;
         }
 
         .form-group input {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
         }
 
         .form-group input:focus {
             border-color: #667eea;
             outline: none;
+            box-shadow: 0 0 15px rgba(102, 126, 234, 0.2);
         }
 
-        .progress-summary {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+        .share-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-share {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
             color: white;
-            padding: 15px;
+            padding: 12px 25px;
+            border: none;
             border-radius: 10px;
-            margin-bottom: 20px;
-            text-align: center;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.3);
         }
 
-        .progress-summary h3 {
-            margin-bottom: 10px;
+        .btn-share:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         @media (max-width: 768px) {
             .header h1 {
-                font-size: 2rem;
+                font-size: 2.2rem;
             }
             
             .management-buttons {
@@ -407,13 +667,30 @@
             
             .students-grid {
                 grid-template-columns: 1fr;
-                gap: 15px;
+                gap: 20px;
             }
             
             .modal-content {
-                width: 95%;
-                margin: 10% auto;
-                padding: 20px;
+                width: 98%;
+                margin: 5% auto;
+                padding: 25px;
+            }
+
+            .search-filter {
+                flex-direction: column;
+            }
+
+            .stats-overview {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .teacher-input {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .teacher-input label {
+                min-width: auto;
             }
         }
     </style>
@@ -421,15 +698,16 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎓 كشف متابعة طلاب الصف الأول الابتدائي</h1>
-            <h2>مدارس البشرى</h2>
+            <h1>🎓 نظام متابعة طلاب الصف الأول الابتدائي</h1>
+            <h2>مدارس البشرى - النظام المتطور</h2>
         </div>
 
         <div class="auth-section" id="authSection">
-            <h3> تسجيل الدخول  </h3>
-            <p>يرجى تسجيل الدخول لحفظ التغييرات والوصول إلى بياناتك</p>
+            <h3>مرحباً بك في النظام المحسن</h3>
+            <p>يرجى تسجيل الدخول للوصول إلى جميع الميزات المتقدمة</p>
             <button class="google-signin-btn" onclick="simulateGoogleLogin()">
-                📧 تسجيل الدخول بـ 
+                <span class="loading hidden" id="loginLoading"></span>
+                📧 تسجيل الدخول بـ Google
             </button>
         </div>
 
@@ -441,10 +719,40 @@
                 </div>
             </div>
 
+            <div class="stats-overview" id="statsOverview">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalStudents">0</div>
+                    <div class="stat-label">إجمالي الطلاب</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="avgReading">0%</div>
+                    <div class="stat-label">متوسط القراءة</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="avgWriting">0%</div>
+                    <div class="stat-label">متوسط الكتابة</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="excellentStudents">0</div>
+                    <div class="stat-label">الطلاب المتفوقون</div>
+                </div>
+            </div>
+
             <div class="student-management">
                 <div class="management-buttons">
                     <button class="btn btn-add" onclick="addStudent()">➕ إضافة طالب</button>
-                    <button class="btn btn-subject" onclick="showLanguageSubject()">📚 لغتي</button>
+                    <button class="btn btn-subject" onclick="showLanguageSubject()">📚 عرض التقارير</button>
+                    <button class="btn btn-export" onclick="exportAllData()">📤 تصدير البيانات</button>
+                </div>
+
+                <div class="search-filter">
+                    <input type="text" class="search-input" id="searchInput" placeholder="🔍 البحث عن طالب..." onkeyup="filterStudents()">
+                    <select class="filter-select" id="progressFilter" onchange="filterStudents()">
+                        <option value="all">جميع الطلاب</option>
+                        <option value="excellent">المتفوقون (90%+)</option>
+                        <option value="good">جيد (70-89%)</option>
+                        <option value="needs-improvement">يحتاج تحسين (<70%)</option>
+                    </select>
                 </div>
             </div>
 
@@ -453,11 +761,12 @@
             </div>
 
             <div class="chart-container" id="chartContainer" style="display: none;">
-                <h3>الرسم البياني لمستوى الطلاب</h3>
+                <h3>📊 التحليل الشامل لمستوى الطلاب</h3>
                 <canvas id="progressChart"></canvas>
                 <div class="share-buttons">
                     <button class="btn-share" onclick="shareChart()">📊 مشاركة الرسم البياني</button>
-                    <button class="btn-share" onclick="shareReport()">📋 مشاركة التقرير</button>
+                    <button class="btn-share" onclick="shareDetailedReport()">📋 التقرير المفصل</button>
+                    <button class="btn-share" onclick="generatePrintableReport()">🖨️ تقرير للطباعة</button>
                 </div>
             </div>
         </div>
@@ -470,9 +779,13 @@
             <h2>إضافة طالب جديد</h2>
             <div class="form-group">
                 <label for="studentName">اسم الطالب:</label>
-                <input type="text" id="studentName" placeholder="أدخل اسم الطالب">
+                <input type="text" id="studentName" placeholder="أدخل اسم الطالب كاملاً">
             </div>
-            <button class="btn btn-add" onclick="saveStudent()">حفظ الطالب</button>
+            <div class="form-group">
+                <label for="studentId">رقم الطالب (اختياري):</label>
+                <input type="text" id="studentId" placeholder="رقم الطالب">
+            </div>
+            <button class="btn btn-add" onclick="saveStudent()">💾 حفظ الطالب</button>
         </div>
     </div>
 
@@ -483,51 +796,54 @@
             <h2 id="languageModalTitle">تقييم مادة لغتي</h2>
             
             <div class="progress-summary" id="progressSummary">
-                <h3>ملخص التقدم</h3>
-                <p id="progressText">القراءة: 0/11 | الكتابة: 0/12</p>
+                <h3>📈 ملخص التقدم</h3>
+                <p id="progressText">القراءة: 0/12 | الكتابة: 0/12</p>
             </div>
 
             <div class="skill-section">
-                <div class="skill-title">📖 القراءة</div>
+                <div class="skill-title">📖 مهارات القراءة</div>
                 <div id="readingSkills">
                     <!-- مهارات القراءة -->
                 </div>
             </div>
 
             <div class="skill-section">
-                <div class="skill-title">✍️ الكتابة</div>
+                <div class="skill-title">✍️ مهارات الكتابة</div>
                 <div id="writingSkills">
                     <!-- مهارات الكتابة -->
                 </div>
             </div>
 
             <div class="chart-container">
-                <h3>الرسم البياني للطالب</h3>
+                <h3>📊 الرسم البياني للطالب</h3>
                 <canvas id="studentChart"></canvas>
                 <div class="share-buttons">
                     <button class="btn-share" onclick="shareStudentProgress()">📤 إرسال للولي</button>
+                    <button class="btn-share" onclick="generateStudentCertificate()">🏆 شهادة تقدير</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // بيانات الطلاب
+        // بيانات الطلاب والإعدادات
         let students = [];
+        let filteredStudents = [];
         let currentStudentId = null;
         let isLoggedIn = false;
         let userEmail = '';
+        let charts = {};
 
-        // مهارات القراءة والكتابة
+        // مهارات القراءة والكتابة المحدثة
         const readingSkills = [
-            'التعرف على الحروف',
+            'التعرف على الحروف الهجائية',
             'الحروف بحركة الفتح',
             'الحروف بحركة الكسر',
             'الحروف بحركة الضم',
-            'سرعة الأداء في الحروف',
-            'قراءة كلمات ثلاثية',
+            'سرعة الأداء في قراءة الحروف',
+            'قراءة كلمات ثلاثية بسيطة',
             'المد بالألف والواو والياء',
-            'السكون',
+            'السكون وعلامته',
             'اللام القمرية',
             'الشدة',
             'اللام الشمسية',
